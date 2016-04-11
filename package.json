@@ -1,0 +1,60 @@
+{
+  "name": "wilas",
+  "version": "1.0.0",
+  "description": "techstudio.wilas.js,wilas core js functions",
+  "main": "dist/techstudio.wilas.js",
+  "minMain":"dist/techstudio.wilas.min.js",
+  "subs":{
+   
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suxuekun/grunt_browserify_external_demo.git"
+  },
+  "keywords": [
+    "es6",
+    "techstudio",
+    "wilas"
+  ],
+  "author": "sillyboy",
+  "license": "LGPL",
+  "bugs": {
+    "url": "https://github.com/suxuekun/wilas/issues"
+  },
+  "homepage": "https://github.com/suxuekun/wilas#readme",
+  "devDependencies": {
+    "babel-cli": "^6.6.5",
+    "babel-plugin-external-helpers": "^6.5.0",
+    "babel-plugin-transform-es2015-modules-umd": "^6.6.5",
+    "babel-preset-es2015": "^6.6.0",
+    "babelify": "^7.2.0",
+    "browserify-shim": "^3.8.12",
+    "echarts": "^3.1.5",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.1",
+    "jquery": "^2.2.3",
+    "moment": "^2.12.0",
+    "requirejs": "^2.2.0"
+  },
+  "browserify-shim": {
+    "jquery": "global:jQuery",
+    "moment": {
+      "exports": "global:moment"
+    },
+    "echarts": {
+      "exports": "global:echarts"
+    }
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  }
+}

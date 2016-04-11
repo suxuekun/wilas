@@ -1,0 +1,31 @@
+<!DOCTYPE html>  
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
+        <script src="../node_modules/requirejs/require.js"  ></script>
+              
+    </head>
+    <body>
+    	<script>
+    		require.config({
+    			baseUrl:'../',
+   				paths:{
+   					'moment':'node_modules/moment/moment',
+   					'echarts':'node_modules/echarts/dist/echarts',
+					  'jquery':'node_modules/jquery/dist/jquery',
+					  'wilas':'dist/techstudio.wilas',
+				}
+			});
+			require(['jquery','echarts','moment'],function($,ec,mo){
+        //fix the global dependency of echart and moment;
+				if (window.echarts == null) window.echarts = ec;
+				if (window.moment == null) window.moment = mo;
+				require(['wilas'],function(wilas){
+          // start your code from here
+					console.log(wilas);
+				})
+			});
+    	</script>
+    </body>
+</html>
