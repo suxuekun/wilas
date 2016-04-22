@@ -1,0 +1,198 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../dist/techstudio.wilas.js"></script>
+  </head>
+  <body>
+    <div id="demo"></div>
+    <div id="demo2"></div>
+    <script>
+      console.log(window.techstudio.wilas);
+
+      // var util = techstudio.wilas.util;
+      // console.log(util);
+
+      // console.log(util.test("vencent",'su','charles'));
+
+
+      web
+      var web = techstudio.wilas.web;
+      console.log(web);
+      web.config({
+        renders:{
+          render:'abc',
+        },
+        sth:{
+          sth1:'sth1'
+        }
+      });
+      web.config({
+        baseUrls:{
+          template:'../examples/templates/',
+        },
+        options:{
+          testOption:{
+              change:'just change this test',
+              css:{
+                border:"1px solid red",
+                width:"100px",
+                height:"100px"
+              }
+            },
+        },
+        renders:{
+          testRender:{
+            initialize:function(dom,options){
+              var wtf = $(dom).find('#wtf');
+              wtf.html(options.change);
+              Object.keys(options.css).map(function(key,index){
+                var value = options.css[key];
+                wtf.css(key,value);
+              })
+              
+            },
+            render:function(data,options,dom){
+              var wtf = $(dom).find('#wtfContent');
+              wtf.html(data);
+            },
+            options:'testOption',
+            template:'testTemplate'
+          },
+          urlRender:{
+            initialize:function(dom,options){
+              $(dom).find('#inner').html(options.name+":");
+            },
+            render:function(data,options,dom){
+              $(dom).find('#inner').html(options.name+":"+data.name);
+            },
+            options:{name:'sha?'},
+            template:'urlTemplate',
+          }
+        },
+        templates:{
+          testTemplate:{
+            content:"<div id ='wtf'>just a test</div><div id='wtfContent'></div>"
+          },
+          urlTemplate:{
+            url:"inner.html",
+          }
+
+        },
+        sth:{
+          sth12:'sth12'
+        }
+      });
+      console.log(web.config());
+
+      var textData = 'just hello world';
+      var objectData = {
+        name:'me'
+      }
+
+      var Component = web.Component;
+      var c = new Component();
+      var r = web.createRender('urlRender')//('testRender');
+      c.setRenderer(r)
+        .init($('#demo')[0])
+        // .setData(objectData)
+        // .render();
+
+      var c2= new Component();
+      c2.setRenderer(r)
+        .init($('#demo2')[0])
+        .setData(objectData)
+        .render();
+
+
+      // var util = techstudio.wilas.util;
+
+      // var a = {};
+      // var b = {};
+      // var c = {a:{
+      //   a1:1,
+      //   a2:2,
+      // }}
+      // a.b = b;
+      // b.a = a;
+      // b.date = new Date();
+      // console.log('a,b,c',a,b,c);
+      // c = util.deepExtend(c,b);
+      // console.log('c',c);
+      // c.a.b = null;
+      // console.log(a,b,c);
+      // c.date.setYear("2013");
+      // console.log(c.date.getDate());
+
+      // var d = 3;
+      // var e = {
+      //   a:{
+      //     wtf:'wtf',
+      //     name:'name',
+      //   },
+      //   v:{
+      //     name:'v'
+      //   },
+      //   t:3,
+      // };
+      // var f = {
+      //   a:{
+      //     name:'fname',
+      //     name2:'name2',
+      //   },
+      //   v:3,
+      //   t:{
+      //     name:'t',
+      //   }
+      // };
+
+      // util.deepExtend(e,f,true);
+      
+      // console.log('def',d,e,f);
+
+
+      // var target = {
+      //   case1:"1",
+      //   case2:"2",
+      //   case3:{
+      //     content:'3',
+      //   },
+      //   case4:{
+      //     case41:"41",
+      //     case42:"42",
+      //     case43:{
+      //       content:"43"
+      //     },
+      //     case44:{
+      //       content:'44'
+      //     }
+      //   }
+
+      // }
+      // var source = {
+      //   case1:"change1",
+      //   case2:{content:'changed2'},
+      //   case3:"changed3",
+      //   case4:{
+      //     case41:"changed41",
+      //     case42:{content:"changed42"},
+      //     case43:"changed43",
+      //     case44:{
+      //       content:"changed44"
+      //     },
+      //     extended:'abc'
+      //   },
+      //   extendec:{
+      //     sthadd:'sthadd'
+      //   }
+      // }
+      // util.deepExtend(target,source,true);
+      // console.log(target,source);
+
+      //util.deepExtend(d,f);
+    </script>
+  </body>
+</html>

@@ -15,7 +15,8 @@
    					'echarts':'node_modules/echarts/dist/echarts',
 					  'jquery':'node_modules/jquery/dist/jquery',
 					  'wilas':'dist/techstudio.wilas',
-				}
+            'fileUtil':'dist/wilas.util.fileUtil'
+          }
 			});
 			require(['jquery','echarts','moment'],function($,ec,mo){
         //fix the global dependency of echart and moment;
@@ -24,7 +25,15 @@
 				require(['wilas'],function(wilas){
           // start your code from here
 					console.log(wilas);
+          require(['fileUtil'],function(fileUtil){
+            // if use file Util
+            // need to require wilas first or fileUtil will not working
+            console.log(fileUtil);
+            console.log(window.techstudio)
+          });
+
 				})
+
 			});
     	</script>
     </body>

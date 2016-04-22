@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/moment/moment.js"></script>
+    <script src="../node_modules/echarts/dist/echarts.js"></script>
+    <script src="../dist/techstudio.wilas.js"></script>
+    
+   
+  </head>
+  <body>
+    <div id="demo" style="width:200px;height:200px;border:1px solid red"></div>
+    <script>
+      console.log(techstudio.wilas);
+      var data = techstudio.wilas.data;
+      var DataSTD = data.DataSTD;
+      var DataAdapter = data.DataAdapter;
+
+      var labels = [1,2,3,4,5,6,7];
+      var d11 = new DataSTD('d11');
+      d11.setData([1,2,3,4,5,6,7]);
+      d11.setLabel(labels);
+      var d12 = new DataSTD('d11');
+      d12.setData([1,2,3,4,5,6,7]);
+      d12.setLabel(labels);
+
+      var d2 = new DataSTD('d2');
+      d2.setData([d11,d12]);
+      d2.setLabel(['d11','d12']);
+      console.log(d2);
+
+      var addOneAdapter = new DataAdapter();
+      addOneAdapter.adapter = function(src){
+        return src +1;
+      }
+      console.log(addOneAdapter,addOneAdapter.adapter);
+      var result = addOneAdapter.setSrc(1).getData();
+      console.log(result);
+
+
+    </script>
+  </body>
+</html>

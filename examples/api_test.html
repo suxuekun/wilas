@@ -1,0 +1,42 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/moment/moment.js"></script>
+    <script src="../node_modules/echarts/dist/echarts.js"></script>
+    <script src="../dist/techstudio.wilas.js"></script>
+    
+   
+  </head>
+  <body>
+    <button id ='a'>api</button>
+    <div id="demo" style="width:200px;height:200px;border:1px solid red"></div>
+    <script>
+      console.log(techstudio.wilas);
+      var api = techstudio.wilas.api;
+      var DataAdapter = techstudio.wilas.data.DataAdapter;
+      var someApi = new api.AdapterApi('http://wilas.techstudio.mobi:8813/LastSeen');
+      var adapter = new DataAdapter();
+      adapter.adapter = function(data){
+        data[0].tag = "changed";
+        return data;
+      }
+      someApi.adapter = adapter;
+      $('#a').click(function(){
+        someApi.callApi({
+          mac:'B4:B6:76:32:6D:24',
+          threshold:300000,
+          tenantId:'tangs'
+        }).done(function(data){
+          console.log('api return = api.adapter.getSrc()',data==someApi.adapter.getSrc(),someApi.adapter.getSrc());
+          console.log('data = api.adapter.getData()',someApi.data == someApi.adapter.getData(),someApi.data);
+          console.log(someApi);
+        })
+      })
+
+    </script>
+  </body>
+</html>

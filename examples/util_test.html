@@ -1,0 +1,41 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/moment/moment.js"></script>
+    <script src="../node_modules/echarts/dist/echarts.js"></script>
+    <script src="../dist/techstudio.wilas.js"></script>
+    <script src="../dist/wilas.util.fileUtil.js"></script>
+    
+   
+  </head>
+  <body>
+    <button id ='a'>fullscreen</button>
+    <button id ='b'>download</button>
+    <div id="demo" style="width:200px;height:200px;border:1px solid red"></div>
+    <script>
+      console.log(techstudio.wilas);
+      var util = techstudio.wilas.util
+      var fileUtil = util.fileUtil;
+      var list= [
+        {
+          name:'1.txt',
+          content:"sometxt",
+        },
+        {
+          name:'2.txt',
+          content:'sth',
+        }
+      ]
+      $('#a').on('click',function(e){
+        util.fullScreenReform([document.getElementById('demo')],'someClassName')
+      });
+      $('#b').on('click',function(e){
+        fileUtil.zipDownload('abc.zip',list);
+      });
+    </script>
+  </body>
+</html>

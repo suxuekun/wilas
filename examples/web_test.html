@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../dist/techstudio.wilas.js"></script>
+    
+   
+  </head>
+  <body>
+    <div id="demo" style="width:200px;height:200px;border:1px solid red"></div>
+    <div id="demo2" style="width:200px;height:200px;border:1px solid red"></div>
+    <script>
+      console.log(window.techstudio.wilas);
+      var web = techstudio.wilas.web;
+      var Component = web.Component;
+      var Template = web.Template;
+      var Render = web.Render;
+      var TemplateRender = web.TemplateRender;
+      var RemoteTemplate = web.RemoteTemplate;
+
+      var dom = document.getElementById("demo");
+      var dom2 = document.getElementById("demo2");
+
+
+      var t = new Template();
+      t.content = "<div class='title'></div><div><div class= 'abc' style='display:inline-block;'></div><div class='def' style='display:inline-block;'></div></div>";
+
+      var r = new TemplateRender(t);
+
+      var innerT = new RemoteTemplate("templates/inner.html");
+      var innerT2 = new RemoteTemplate("templates/inner2.html");
+      r.render = function(data,options,dom){
+        var $dom = $(dom);
+        $dom.find(".title").html(data.name);
+
+        var innerComponent = new Component();
+      
+        // innerT.content = '<div id="inner" style="width:100px;height:100px;border:1px solid blue"></div>';
+
+        var rendfunc = function(data,options,dom){
+          $(dom).find('#inner').html(options.name+":"+data.name);
+        }
+        var innerRender = new TemplateRender(innerT);
+        innerRender.initialize = function(dom,options){
+          $(dom).find('#inner').html(options.name+":");
+        }
+        innerRender.render = rendfunc;
+        innerRender.setOptions({name:'data'});
+
+        innerComponent.setRenderer(innerRender)
+        .init($dom.find(".abc")[0])
+        .setData(data.data1)
+        .render();
+
+        var innerComponent2 = new Component();
+        innerComponent2.setRenderer(innerRender)
+        // .init($dom.find(".def")[0])
+        // .setData(data.data2)
+        // .render();
+        setTimeout(function(){
+          innerRender.setTemplate(innerT2);
+          innerComponent2
+          .init($dom.find(".def")[0])
+          .setData(data.data2)
+          .render()
+        },2000)
+
+      }
+      var c = new Component();
+      c.setRenderer(r)
+      .init(dom)
+      .setData({name:"example1",data1:{name:'inner1'},data2:{name:'inner2'}})
+      .render();
+
+
+      var r2 = new Render();
+      r2.setOptions({style:'abc'})
+      r2.initialize = function(dom,options){
+        var $dom = $(dom);
+        $dom.html('init:'+options.style);
+      }
+      r2.render = function(data,options,dom){
+        var $dom = $(dom);
+        if (data){
+          $dom.append(data.name);
+        }
+      }
+
+      var c2 = new Component();
+      c2.setRenderer(r)
+      .init(dom2)
+      .setData({name:"example2",data1:{name:'another1'},data2:{name:'another2'}})
+      .render();
+
+
+
+    </script>
+  </body>
+</html>

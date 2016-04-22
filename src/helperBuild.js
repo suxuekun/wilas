@@ -16,10 +16,10 @@ var createPaths = function(){
     createORIgnore(config.paths.build);
 }
 
-var helperBuild = config.paths.build + '/helpers.js';
+var helperFile = config.paths.src + config.helper;
 
 var createHelper = function(file){
-    if (!file) file = helperBuild;
+    if (!file) file = helperFile;
     var cmd = './node_modules/.bin/babel-external-helpers > '+file;
     exec(cmd,function(error,stdout,stderr){
         if (error !== null) {

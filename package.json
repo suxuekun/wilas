@@ -3,10 +3,8 @@
   "version": "1.0.0",
   "description": "techstudio.wilas.js,wilas core js functions",
   "main": "dist/techstudio.wilas.js",
-  "minMain":"dist/techstudio.wilas.min.js",
-  "subs":{
-   
-  },
+  "minMain": "dist/techstudio.wilas.min.js",
+  "subs": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "grunt"
@@ -21,7 +19,7 @@
     "wilas"
   ],
   "author": "sillyboy",
-  "license": "LGPL",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/suxuekun/wilas/issues"
   },
@@ -32,15 +30,22 @@
     "babel-plugin-transform-es2015-modules-umd": "^6.6.5",
     "babel-preset-es2015": "^6.6.0",
     "babelify": "^7.2.0",
+    "browser-filesaver": "^1.1.1",
     "browserify-shim": "^3.8.12",
     "echarts": "^3.1.5",
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0",
+    "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-connect": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-http-server": "^1.16.0",
     "jquery": "^2.2.3",
+    "jszip": "^2.6.0",
     "moment": "^2.12.0",
+    "react": "^15.0.1",
     "requirejs": "^2.2.0"
   },
   "browserify-shim": {
