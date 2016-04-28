@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
-        <script src="../node_modules/requirejs/require.js"  ></script>
+        <script src="js/require.js"  ></script>
               
     </head>
     <body>
@@ -28,8 +28,8 @@
           require(['fileUtil'],function(fileUtil){
             // if use file Util
             // need to require wilas first or fileUtil will not working
-            console.log(fileUtil);
-            console.log(window.techstudio)
+            console.log('fileutil is ',fileUtil);
+            console.log('techstudio is ',window.techstudio)
           });
 
 				})

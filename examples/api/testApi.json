@@ -1,22 +1,3 @@
 {
-  'result':{
-    'xxxx-01-01':{
-      footfall:100,
-      footfall1:101,
-      footfall2:102,
-      dwell:200,
-    },
-    'xxxx-01-02':{
-      footfall:50,
-      footfall1:51,
-      footfall2:52,
-      dwell:100,
-    },
-    'xxxx-01-03':{
-      footfall:25,
-      footfall1:26,
-      footfall2:27,
-      dwell:50,
-    },
-  }
+  "result":"some return data"
 }

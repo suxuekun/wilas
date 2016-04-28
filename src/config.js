@@ -2,7 +2,8 @@
 var paths = {
     src:'src/',
     dist:'dist/',
-    build:'build/'
+    build:'build/',
+    examples:'examples/',
 }
 
 var main = 'wilas.js';

@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
     <!-- public lib-->
-    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/echarts.min.js"></script>
     <!-- private lib-->
     <script src="../dist/techstudio.wilas.js"></script>
     <!-- module config-->
@@ -15,17 +15,28 @@
       height:200px;
     }
     .wtf2{
+      display:inline-block;
       width:300px;
       height:300px;
     }
     #t2{
+      display:inline-block;
       width:50%;
+    }
+    .title{
+      width:90%;
+      margin:auto;
+      text-align: center;
+      border:1px solid red;
+    }
+    #demo{
+      border:1px solid black;
     }
     </style>
   </head>
   <body>
 
-    <div id="demo" style ="height:300px"></div>
+    <div id="demo" style ="width:800px"></div>
     <!-- page js-->
     <script>
       // init config
@@ -48,7 +59,7 @@
           init:true
         }).render();
       },1000)
-      web.config().register('templates','tt',{});
+      // web.config().register('templates','tt',{});
       console.log(web.config());
 
       //manual create a new widget

@@ -67,15 +67,40 @@ module.exports = function(grunt) {
 		copy:{
 			// copy to dist
 			all:{
-				files:[
-				{
+				files:[{
 					expand:true,
 					cwd:config.paths.build,
 					src:['**'],
 					dest:config.paths.dist,
 				}
 				]
-			}
+			},
+			// copy to examples
+			external:{
+				files:[
+				{
+					expand:true,
+					cwd:'node_modules/echarts/dist/',
+					src:['echarts.js','echarts.min.js'],
+					dest:config.paths.examples + "js/"
+				},{
+					expand:true,
+					cwd:'node_modules/jquery/dist/',
+					src:['jquery.js','jquery.min.js'],
+					dest:config.paths.examples + "js/"
+				},{
+					expand:true,
+					cwd:'node_modules/requirejs/',
+					src:['require.js'],
+					dest:config.paths.examples + "js/"
+				},{
+					expand:true,
+					cwd:'node_modules/moment',
+					src:['moment.js'],
+					dest:config.paths.examples + "js/"
+				}
+				]
+			},
 		},
 		uglify: {
 			options: {
@@ -119,6 +144,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-connect');
 
+
+	grunt.registerTask('example',['copy:external']);
 	grunt.registerTask('dev', ['clean:init','browserify','concat','copy:all','clean:del']);
 	grunt.registerTask('build', ['dev','uglify']);
 	grunt.registerTask('run',['connect','watch']);

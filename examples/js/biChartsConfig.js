@@ -230,7 +230,7 @@
 	components.testComponent = testComponent;
 	//widget example
 	var testWidgetTemplate = {
-		content:'<div id="t1" class="wtf"></div><div id="t2" class="wtf"></div><div id="t3" class="wtf2"></div>',
+		content:'<div class="title"><h1>here is a widget demo</h1></div><div id="t1" class="wtf"></div><div id="t2" class="wtf"></div><div id="t3" class="wtf2"></div>',
 	}
 	templates.testWidgetTemplate = testWidgetTemplate;
 
