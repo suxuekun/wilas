@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
+    <!-- public lib-->
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <!-- private lib-->
+    <script src="../dist/techstudio.wilas.js"></script>
+    <!-- module config-->
+    <script src="js/biChartsConfig.js"></script>
+  </head>
+  <body>
+    <div id="demo" style ="height:300px"></div>
+    <!-- page js-->
+    <script>
+      // init config
+      var web = techstudio.wilas.web;
+      var BI = techstudio.wilas.bi;
+      web.config(BI.echartConfig);
+      console.log(web);
+      // create a exist component
+      var component = web.createComponent('testComponent')
+      .init($('#demo')[0]);
+      // when meet some condition call api and render component;
+      setTimeout(function(){
+        component.api.callApi();
+      },1000)
+    </script>
+  </body>
+</html>

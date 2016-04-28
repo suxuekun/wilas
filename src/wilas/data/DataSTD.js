@@ -4,18 +4,21 @@ export class DataSTD{
 	}
 	setName(name){
 		this.name = name;
+		return this;
 	}
 	setData(data){
 		this.data = data;
+		return this;
 	}
 	setLabel(label){
 		this.label = label;
+		return this;
 	}
 	getName(){
 		return this.name;
 	}
 	getData(){
-		return this.Data;
+		return this.data;
 	}
 	getLabel(){
 		return this.label;

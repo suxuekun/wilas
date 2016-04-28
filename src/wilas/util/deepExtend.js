@@ -25,7 +25,7 @@ export function deepCopy(source){
 }
 function _deepExtend(target,source,keep,refs,copys){
 	if (target == null || typeof(target) !='object'){
-		if (target != null && keep){
+		if (!(target === undefined) && keep){
 			//dont change target
 		}else{
 			target = _deepCopy(source,refs,copys);

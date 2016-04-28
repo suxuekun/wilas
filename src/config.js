@@ -14,6 +14,7 @@ var global={
 };
 var helper = 'helper.js';
 var externals = ['jquery','echarts','moment'];
+
 var config = {
 	paths:paths,
 	global:global,

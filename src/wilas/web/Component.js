@@ -29,7 +29,7 @@ export class Component{
 		return this[_data];
 	}
 	render(){
-		if (this.getRenderer()){
+		if (this.getRenderer() && this.getDom()){
 			this.getRenderer().render(this.getData(),null,this.getDom());
 		}
 		return this;

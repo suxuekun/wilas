@@ -31,6 +31,9 @@
 
       var innerT = new RemoteTemplate("templates/inner.html");
       var innerT2 = new RemoteTemplate("templates/inner2.html");
+      innerT2.done(function(){
+        console.log('wtf');
+      })
       r.render = function(data,options,dom){
         var $dom = $(dom);
         $dom.find(".title").html(data.name);

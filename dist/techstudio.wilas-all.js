@@ -376,7 +376,7 @@
     }
   };
 })(typeof global === "undefined" ? self : global);
-;(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}(g.techstudio || (g.techstudio = {})).wilas = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+;;(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}(g.techstudio || (g.techstudio = {})).wilas = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -443,17 +443,21 @@ var _adapter = Symbol("_adapter");
 var AdapterApi = exports.AdapterApi = function (_BasicApi) {
 	babelHelpers.inherits(AdapterApi, _BasicApi);
 
-	function AdapterApi() {
+	function AdapterApi(url, params, adapter) {
 		babelHelpers.classCallCheck(this, AdapterApi);
-		return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(AdapterApi).apply(this, arguments));
+
+		var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(AdapterApi).call(this, url, params));
+
+		_this.adapter = adapter;
+		return _this;
 	}
 
 	babelHelpers.createClass(AdapterApi, [{
-		key: "callApi",
-		value: function callApi(params) {
+		key: "__callApi",
+		value: function __callApi(params) {
 			var _this2 = this;
 
-			return babelHelpers.get(Object.getPrototypeOf(AdapterApi.prototype), "callApi", this).call(this, params).done(function (data) {
+			return babelHelpers.get(Object.getPrototypeOf(AdapterApi.prototype), "__callApi", this).call(this, params).done(function (data) {
 				if (_this2.adapter) {
 					_this2.data = _this2.adapter.setSrc(data).getData();
 				}
@@ -485,6 +489,7 @@ var _jquery = (typeof window !== "undefined" ? window['jQuery'] : typeof global 
 var _jquery2 = babelHelpers.interopRequireDefault(_jquery);
 
 var _promise = Symbol("_promise");
+var _done = Symbol("_done");
 
 var BasicApi = exports.BasicApi = function () {
 	function BasicApi(url, params) {
@@ -514,6 +519,11 @@ var BasicApi = exports.BasicApi = function () {
 			this.ajax[name] = value;
 		}
 	}, {
+		key: "getData",
+		value: function getData() {
+			return this.data;
+		}
+	}, {
 		key: "getPromise",
 		value: function getPromise() {
 			return this[_promise];
@@ -521,16 +531,39 @@ var BasicApi = exports.BasicApi = function () {
 	}, {
 		key: "callApi",
 		value: function callApi(params) {
+			this.__callApi(params);
+			this.__addDoneFunc();
+			return this.getPromise();
+		}
+	}, {
+		key: "__callApi",
+		value: function __callApi(params) {
 			var _this = this;
 
 			if (params) {
 				this.ajax.data = params;
 			}
 			this[_promise] = _jquery2.default.ajax(this.ajax);
-			return this[_promise].done(function (data) {
+			this[_promise].done(function (data) {
 				_this.preData = _this.data;
 				_this.data = data;
 			});
+			return this[_promise];
+		}
+	}, {
+		key: "__addDoneFunc",
+		value: function __addDoneFunc() {
+			if (this[_done]) {
+				this[_promise].done(this[_done]);
+			}
+		}
+	}, {
+		key: "done",
+		value: function done(func) {
+			this[_done] = func;
+			if (this[_promise]) {
+				this[_promise].done(func);
+			}
 		}
 	}]);
 	return BasicApi;
@@ -565,10 +598,10 @@ var _deepExtend = require("../util/deepExtend.js");
 var _adapter = Symbol("_adapter");
 
 var DataAdapter = exports.DataAdapter = function () {
-	function DataAdapter(src) {
+	function DataAdapter(func) {
 		babelHelpers.classCallCheck(this, DataAdapter);
 
-		this.setSrc(src);
+		this.adapter = func;
 	}
 
 	babelHelpers.createClass(DataAdapter, [{
@@ -601,9 +634,13 @@ var DataAdapter = exports.DataAdapter = function () {
 		set: function set(func) {
 			var _this = this;
 
-			this[_adapter] = function (src) {
-				return func(_this.__adapter(src));
-			};
+			if (func) {
+				this[_adapter] = function (src) {
+					return func(_this.__adapter(src));
+				};
+			} else {
+				this[_adapter] = null;
+			}
 		},
 		get: function get() {
 			return this[_adapter] || this.__adapter;
@@ -630,16 +667,19 @@ var DataSTD = exports.DataSTD = function () {
 		key: "setName",
 		value: function setName(name) {
 			this.name = name;
+			return this;
 		}
 	}, {
 		key: "setData",
 		value: function setData(data) {
 			this.data = data;
+			return this;
 		}
 	}, {
 		key: "setLabel",
 		value: function setLabel(label) {
 			this.label = label;
+			return this;
 		}
 	}, {
 		key: "getName",
@@ -649,7 +689,7 @@ var DataSTD = exports.DataSTD = function () {
 	}, {
 		key: "getData",
 		value: function getData() {
-			return this.Data;
+			return this.data;
 		}
 	}, {
 		key: "getLabel",
@@ -723,7 +763,7 @@ function deepCopy(source) {
 }
 function _deepExtend(target, source, keep, refs, copys) {
 	if (target == null || (typeof target === 'undefined' ? 'undefined' : babelHelpers.typeof(target)) != 'object') {
-		if (target != null && keep) {
+		if (!(target === undefined) && keep) {
 			//dont change target
 		} else {
 				target = _deepCopy(source, refs, copys);
@@ -879,7 +919,7 @@ function fullScreenReform(elements, divCLASS) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.createRender = exports.createTemplate = exports.config = exports.RemoteTemplate = exports.TemplateRender = exports.Widget = exports.Template = exports.Render = exports.Component = undefined;
+exports.loadConfigFromName = exports.createWidget = exports.createComponent = exports.createRender = exports.createTemplate = exports.createApi = exports.createAdapter = exports.config = exports.RemoteTemplate = exports.TemplateRender = exports.Widget = exports.Template = exports.Render = exports.Component = undefined;
 
 var _Component = require('./web/Component.js');
 
@@ -904,8 +944,13 @@ exports.Widget = _Widget.Widget;
 exports.TemplateRender = _TemplateRender.TemplateRender;
 exports.RemoteTemplate = _RemoteTemplate.RemoteTemplate;
 exports.config = _config.config;
+exports.createAdapter = _helpers.createAdapter;
+exports.createApi = _helpers.createApi;
 exports.createTemplate = _helpers.createTemplate;
 exports.createRender = _helpers.createRender;
+exports.createComponent = _helpers.createComponent;
+exports.createWidget = _helpers.createWidget;
+exports.loadConfigFromName = _helpers.loadConfigFromName;
 
 },{"./web/Component.js":13,"./web/RemoteTemplate.js":14,"./web/Render.js":15,"./web/Template.js":16,"./web/TemplateRender.js":17,"./web/Widget.js":18,"./web/config.js":19,"./web/helpers.js":20}],13:[function(require,module,exports){
 "use strict";
@@ -961,7 +1006,7 @@ var Component = exports.Component = function () {
 	}, {
 		key: "render",
 		value: function render() {
-			if (this.getRenderer()) {
+			if (this.getRenderer() && this.getDom()) {
 				this.getRenderer().render(this.getData(), null, this.getDom());
 			}
 			return this;
@@ -1268,27 +1313,71 @@ var TemplateRender = exports.TemplateRender = function (_Render) {
 }(_Render2.Render);
 
 },{"./Render.js":15}],18:[function(require,module,exports){
+(function (global){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 exports.Widget = undefined;
 
 var _Component2 = require('./Component.js');
 
+var _jquery = (typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null);
+
+var _jquery2 = babelHelpers.interopRequireDefault(_jquery);
+
+var _helpers = require('./helpers.js');
+
 var Widget = exports.Widget = function (_Component) {
-  babelHelpers.inherits(Widget, _Component);
+	babelHelpers.inherits(Widget, _Component);
 
-  function Widget() {
-    babelHelpers.classCallCheck(this, Widget);
-    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Widget).apply(this, arguments));
-  }
+	function Widget() {
+		babelHelpers.classCallCheck(this, Widget);
+		return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Widget).apply(this, arguments));
+	}
 
-  return Widget;
+	babelHelpers.createClass(Widget, [{
+		key: '__initialize',
+		value: function __initialize() {
+			babelHelpers.get(Object.getPrototypeOf(Widget.prototype), '__initialize', this).call(this);
+			if (!this.getRenderer() || !this.getDom()) return;
+
+			if (!this.getRenderer().getOptions()) this.getRenderer().setOptions({});
+			var options = this.getRenderer().getOptions();
+			var children = options.children;
+			var components = null;
+			if (!options.components) {
+				options.components = {};
+			}
+			components = options.components;
+			if (!children) return;
+
+			for (var key in children) {
+				var child = children[key];
+				var name = child.name;
+				var dom = child.dom;
+				// var querytype = child.querytype || "";
+				var config = child.config;
+				if (components[name]) {
+					throw Error('child with same name is no allowed');
+				}
+				components[name] = [];
+				var target = this.getDom().querySelectorAll(dom);
+				if (!target) continue;
+				Object.keys(target).map(function (v, i, a) {
+					var component = (0, _helpers.createComponent)(config);
+					component.init(target[v]);
+					components[name].push(component);
+				});
+			}
+		}
+	}]);
+	return Widget;
 }(_Component2.Component);
 
-},{"./Component.js":13}],19:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./Component.js":13,"./helpers.js":20}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1298,7 +1387,19 @@ exports.config = config;
 
 var _deepExtend = require('../util/deepExtend.js');
 
-var __config = {};
+var __config = {
+	register: function register(group, name, item) {
+		if (!this[group]) this[group] = {};
+		this[group][name] = item;
+	},
+	baseUrls: {},
+	adapters: {},
+	apis: {},
+	options: {},
+	renders: {},
+	templates: {},
+	components: {}
+};
 function config(config) {
 	if (config) {
 		(0, _deepExtend.deepExtend)(__config, config);
@@ -1313,10 +1414,22 @@ function config(config) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.loadConfigFromName = loadConfigFromName;
+exports.createOptions = createOptions;
+exports.createAdapter = createAdapter;
+exports.createApi = createApi;
 exports.createTemplate = createTemplate;
 exports.createRender = createRender;
+exports.createComponent = createComponent;
+exports.createWidget = createWidget;
 
 var _Func = require('../Func.js');
+
+var _BasicApi = require('../api/BasicApi.js');
+
+var _AdapterApi = require('../api/AdapterApi.js');
+
+var _DataAdapter = require('../data/DataAdapter.js');
 
 var _Render = require('./Render.js');
 
@@ -1326,28 +1439,93 @@ var _TemplateRender = require('./TemplateRender.js');
 
 var _RemoteTemplate = require('./RemoteTemplate.js');
 
+var _Component = require('./Component.js');
+
+var _Widget = require('./Widget.js');
+
 var _config = require('./config.js');
 
-function createTemplate(value) {
-	var templateConfig = value;
-	if (!templateConfig) return null;
-	if (typeof templateConfig == 'string') {
-		var templates = (0, _config.config)().templates;
-		if (templates) {
-			templateConfig = templates[templateConfig];
-			if (!templateConfig) {
-				return null;
-			}
+function loadConfigFromName(name, groupName) {
+	// console.log('load',name,groupName);
+	var group = (0, _config.config)()[groupName];
+	var item = null;
+	if (group) {
+		item = group[name];
+		if (!item) {
+			console.warn(name + ' not found in ' + groupName);
 		}
 	}
+	return item;
+}
+
+function createOptions(value) {
+	var optionConfig = value;
+	if (typeof optionConfig == 'string') {
+		optionConfig = loadConfigFromName(optionConfig, 'options');
+	}
+	return optionConfig;
+}
+
+function createAdapter(value) {
+	// console.log('createAdapter',value);
+
+	var adapterConfig = value;
+	if (typeof adapterConfig == 'string') {
+		adapterConfig = loadConfigFromName(adapterConfig, 'adapters');
+	}
+	if (adapterConfig instanceof _DataAdapter.DataAdapter) {
+		return adapterConfig;
+	}
+	if (!adapterConfig) return null;
+	var adapter = new _DataAdapter.DataAdapter(adapterConfig.adapter);
+	return adapter;
+}
+
+function createApi(value) {
+	// console.log('createApi',value);
+
+	var apiConfig = value;
+	if (typeof apiConfig == 'string') {
+		apiConfig = loadConfigFromName(apiConfig, 'apis');
+	}
+	if (apiConfig instanceof _BasicApi.BasicApi) {
+		return apiConfig;
+	}
+	if (!apiConfig) return null;
+	var api = null;
+	if (apiConfig.url) {
+		var url = apiConfig.url;
+		if (!apiConfig.standalone) {
+			if ((0, _config.config)().baseUrls) {
+				url = ((0, _config.config)().baseUrls.api || "") + url;
+			}
+		}
+		if (apiConfig.adapter) {
+			var adapter = createAdapter(apiConfig.adapter);
+			api = new _AdapterApi.AdapterApi(url, apiConfig.params, adapter);
+		}
+	}
+	return api;
+}
+
+function createTemplate(value) {
+	// console.log('createTemplate',value);
+	var templateConfig = value;
+	if (typeof templateConfig == 'string') {
+		templateConfig = loadConfigFromName(templateConfig, 'templates');
+	}
+	if (templateConfig instanceof _Template.Template) {
+		return templateConfig;
+	}
+	if (!templateConfig) return null;
 	var template = null;
 	if (templateConfig.url) {
 		if (templateConfig.standalone) {
 			template = new _RemoteTemplate.RemoteTemplate(templateConfig.url);
 		} else {
-			var url = "";
+			var url = templateConfig.url;
 			if ((0, _config.config)().baseUrls) {
-				url = (0, _config.config)().baseUrls.template + templateConfig.url || "";
+				url = ((0, _config.config)().baseUrls.template || "") + url;
 			}
 			template = new _RemoteTemplate.RemoteTemplate(url);
 		}
@@ -1355,21 +1533,21 @@ function createTemplate(value) {
 		template = new _Template.Template();
 		template.content = templateConfig.content;
 	} else {
+		console.warn('template config should have url or content');
 		template = null;
 	}
 	return template;
 }
-function createRender(renderConfig) {
-	if (!renderConfig) return null;
+function createRender(value) {
+	// console.log('createRender',value);
+	var renderConfig = value;
 	if (typeof renderConfig == 'string') {
-		var renders = (0, _config.config)().renders;
-		if (renders) {
-			renderConfig = renders[renderConfig];
-			if (!renderConfig) {
-				return null;
-			}
-		}
+		renderConfig = loadConfigFromName(renderConfig, 'renders');
 	}
+	if (renderConfig instanceof _Render.Render) {
+		return renderConfig;
+	}
+	if (!renderConfig) return null;
 	var render = null;
 	if (renderConfig.template) {
 		var template = createTemplate(renderConfig.template);
@@ -1382,22 +1560,84 @@ function createRender(renderConfig) {
 
 	var options = null;
 	if (renderConfig.options) {
-		if (typeof renderConfig.options == 'string') {
-			var optionsList = (0, _config.config)().options;
-			if (optionsList) {
-				options = optionsList[renderConfig.options];
-			} else {
-				options = null;
-			}
-		} else {
-			options = renderConfig.options;
-		}
+		options = createOptions(renderConfig.options);
 	}
 	render.setOptions(options, true);
 	return render;
 }
 
-},{"../Func.js":2,"./RemoteTemplate.js":14,"./Render.js":15,"./Template.js":16,"./TemplateRender.js":17,"./config.js":19}]},{},[1])(1)
+function _createComponent(render, options) {
+	render = createRender(render);
+	options = createOptions(options);
+	render.setOptions(options, true);
+	return new _Component.Component().setRenderer(render);
+}
+function _createApiComponent(render, options, api) {
+	var c = _createComponent(render, options);
+	var api = createApi(api);
+	if (c && api) {
+		c.api = api;
+		api.done(function () {
+			c.setData(api.data).render();
+		});
+	}
+	return c;
+}
+
+function createComponent(value) {
+	var componentConfig = value;
+	if (typeof componentConfig == 'string') {
+		componentConfig = loadConfigFromName(componentConfig, 'components');
+	}
+	if (componentConfig instanceof _Component.Component) {
+		return componentConfig;
+	}
+	if (!componentConfig) return null;
+	var component = null;
+	if (componentConfig.api) {
+		component = _createApiComponent(componentConfig.render, componentConfig.options, componentConfig.api);
+	} else {
+		component = _createComponent(componentConfig.render, componentConfig.options);
+	}
+	return component;
+}
+
+function _createWidget(render, options) {
+	render = createRender(render);
+	options = createOptions(options);
+	render.setOptions(options, true);
+	return new _Widget.Widget().setRenderer(render);
+}
+function _createApiWidget(render, options, api) {
+	var c = _createWidget(render, options);
+	var api = createApi(api);
+	if (c && api) {
+		c.api = api;
+		api.done(function () {
+			c.setData(api.data).render();
+		});
+	}
+	return c;
+}
+function createWidget(value) {
+	var widgetConfig = value;
+	if (typeof widgetConfig == 'string') {
+		widgetConfig = loadConfigFromName(widgetConfig, 'widgets');
+	}
+	if (widgetConfig instanceof _Widget.Widget) {
+		return widgetConfig;
+	}
+	if (!widgetConfig) return null;
+	var widget = null;
+	if (widgetConfig.api) {
+		widget = _createApiWidget(widgetConfig.render, widgetConfig.options, widgetConfig.api);
+	} else {
+		widget = _createWidget(widgetConfig.render, widgetConfig.options);
+	}
+	return widget;
+}
+
+},{"../Func.js":2,"../api/AdapterApi.js":4,"../api/BasicApi.js":5,"../data/DataAdapter.js":7,"./Component.js":13,"./RemoteTemplate.js":14,"./Render.js":15,"./Template.js":16,"./TemplateRender.js":17,"./Widget.js":18,"./config.js":19}]},{},[1])(1)
 });;(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g=(g.techstudio||(g.techstudio = {}));g=(g.wilas||(g.wilas = {}));g=(g.util||(g.util = {}));g.fileUtil = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict'
 

@@ -1,8 +1,8 @@
 import {deepCopy} from '../util/deepExtend.js';
 const _adapter = Symbol("_adapter");
 export class DataAdapter{
-	constructor(src){
-		this.setSrc(src);
+	constructor(func){
+		this.adapter = func;
 	}
 	setSrc(src){
 		this.src = src;
@@ -22,7 +22,12 @@ export class DataAdapter{
 		return deepCopy(src);
 	}
 	set adapter(func){
-		this[_adapter] = (src) => func(this.__adapter(src));
+		if (func){
+			this[_adapter] = (src) => func(this.__adapter(src));
+		}else{
+			this[_adapter] = null;
+		}
+		
 	}
 	get adapter(){
 		return this[_adapter] || this.__adapter;

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ES6 demo(grunt+babel+browserify with dependency (jquery,echart,moment))</title>
+    <!-- public lib-->
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <!-- private lib-->
+    <script src="../dist/techstudio.wilas.js"></script>
+    <!-- module config-->
+    <script src="js/biChartsConfig.js"></script>
+    <style>
+    .wtf {
+      height:200px;
+    }
+    .wtf2{
+      width:300px;
+      height:300px;
+    }
+    #t2{
+      width:50%;
+    }
+    </style>
+  </head>
+  <body>
+
+    <div id="demo" style ="height:300px"></div>
+    <!-- page js-->
+    <script>
+      // init config
+      var web = techstudio.wilas.web;
+      // var util = techstudio.wilas.util;
+      // var deepExtend = util.deepExtend;
+      // var Widget = web.Widget;
+      // var Template = web.Template;
+      // var BI = techstudio.wilas.bi;
+      // web.config(BI.echartConfig);
+      console.log(web);
+      // use config to load widget
+      var widget = web.createWidget('testWidget');
+      widget.init($('#demo')[0]).setData({
+        // init:true
+      })
+      .render();
+      setTimeout(function(){
+        widget.setData({
+          init:true
+        }).render();
+      },1000)
+      web.config().register('templates','tt',{});
+      console.log(web.config());
+
+      //manual create a new widget
+
+      // var widget = new Widget();
+      // var template = new Template();
+      // template.content = '<div id="t1" class="wtf"></div><div id="t2" class="wtf"></div><div id="t3" class="wtf2"></div>'
+      // var render = new web.TemplateRender(template);
+      // render.render=function(data,options,dom){
+      //   if (data.init){
+      //     options.components['c1'].map(function(v){
+      //       v.api.callApi()
+      //     })
+      //     options.components['c2'].map(function(v){
+      //       v.api.callApi();
+      //     });
+      //   }
+      // }
+
+      // var options = {
+      //   children:[
+      //     {
+      //       name:'c1',
+      //       dom:'.wtf',
+      //       config:'testComponent',
+      //     },
+      //     {
+      //       name:'c2',
+      //       dom:'#t3',
+      //       config:deepExtend({
+      //         options:deepExtend({
+      //           useDatas:null
+      //         },web.loadConfigFromName('testOptions','options'),true)
+      //       },web.loadConfigFromName('testComponent','components'),true),
+      //     }
+      //   ]
+      // }
+      // render.setOptions(options);
+      // widget.setRenderer(render).init($('#demo')[0]).setData({
+      //   init:true
+      // })
+      // .render();
+    </script>
+  </body>
+</html>
